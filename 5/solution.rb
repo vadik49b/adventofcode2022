@@ -22,10 +22,8 @@ end
 commands.each do |command|
     _,how_many_crates,_,from,_,to = command.split(" ")
 
-    how_many_crates.to_i.times do
-       crate = stacks[from.to_i - 1].pop
-       stacks[to.to_i - 1] << crate
-    end
+    crates = stacks[from.to_i - 1].pop(how_many_crates.to_i)
+    stacks[to.to_i - 1].concat(crates)
 end
 
 stack_top = stacks.inject([]) do |top, s|
