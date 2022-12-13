@@ -9,9 +9,25 @@ end
 
 M, N = lines.length, lines[0].length
 
-sx = lines.index { |line| line.include?("S") }
-sy = lines[sx].index("S")
-S = [sx, sy]
+Sx = lines.index { |line| line.include?("S") }
+Sy = lines[Sx].index("S")
+S = [Sx, Sy]
+
+Ex = lines.index { |line| line.include?("E") }
+Ey = lines[Ex].index("E")
+E = [Ex, Ey]
+
+def elevation(map, x, y)
+    if map[x][y] == "S"
+        return "a".bytes[0]
+    end
+
+    if map[x][y] == "E"
+        return "z".bytes[0]
+    end
+
+    map[x][y].bytes[0]
+end
 
 def get_edges(map, x, y)
     all_edges = [
@@ -19,25 +35,22 @@ def get_edges(map, x, y)
     ].filter { |s| s[0] >= 0 && s[0] < M && s[1] >= 0 && s[1] < N }
 
     all_edges.filter do |s|
-        from = map[x][y] == "S" ? "a" : map[x][y]
-        to = map[s[0]][s[1]] == "E" ? "z" : map[s[0]][s[1]]
-
-        from.bytes[0] + 1 >= to.bytes[0]
+        elevation(map, s[0], s[1]) + 1 >= elevation(map, x, y)
     end
 end
 
-visited = [S]
-steps = [S]
+visited = [E]
+steps = [E]
 distance = {
-    S => 0
+    E => 0
 }
 
 while !steps.empty? do
     step = steps.shift
     x, y = step
 
-    if map[x][y] == "E"
-        pp "finish #{x}, #{y}, #{distance[[x, y]]}"
+    if map[x][y] == "a" || map[x][y] == "S"
+        pp "finish [#{x}, #{y}], distance=#{distance[[x, y]]}"
         break
     end
 
